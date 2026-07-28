@@ -1,0 +1,13 @@
+{
+  "name": "skillful",
+  "version": "1.0.0",
+  "description": "Skillful - custom OpenCode workflow with triage, skill discovery, brainstorming, validation, planning, and SDD execution",
+  "type": "module",
+  "main": ".opencode/plugins/plugin.js",
+  "keywords": [
+    "skills",
+    "workflow",
+    "custom",
+    "plugin"
+  ]
+}

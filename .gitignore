@@ -1,0 +1,4 @@
+node_modules/
+.skillful/sdd/
+.env
+.DS_Store
