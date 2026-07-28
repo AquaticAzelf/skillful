@@ -57,9 +57,19 @@ When returning to a project, `using-skillful` checks for `.skillful/handoff.md` 
 
 ## Installation
 
+### Option 1: Manual
+
 1. Clone this repo into your OpenCode plugins directory
 2. The plugin auto-registers via `package.json` and `.opencode/plugins/plugin.js`
 3. Skills are automatically loaded from `skills/`
+
+### Option 2: One-shot AI Install
+
+Copy and paste this to your OpenCode agent:
+
+> Install the skillful plugin from https://github.com/AquaticAzelf/skillful. Clone it, set it up, and make sure OpenCode loads it. Tell me when it's ready.
+
+The agent will clone, configure, and activate it.
 
 ## Requirements
 
