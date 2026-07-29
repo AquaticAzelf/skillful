@@ -44,7 +44,10 @@ When returning to a project, `using-skillful` checks for `.skillful/handoff.md` 
 | `brainstorming` | Design | Autonomous spec generation (subagent) or interactive Q&A |
 | `skillful-grill` | Validation | Stress-test spec for holes |
 | `writing-plans` | Planning | Per-task plans, skill assignments |
-| `subagent-driven-development` | Execution | Task-by-task implementation |
+| `subagent-driven-development` | Execution | Task-by-task implementation with fix loops |
+| `executing-plans` | Execution | Execute plans in separate sessions |
+| `dispatching-parallel-agents` | Execution | Parallel independent task dispatch |
+| `writing-skills` | Authoring | TDD-based skill creation and testing |
 | `security` | Planning | Threat modeling, auth, OWASP |
 | `law` | Planning | Licensing, GDPR/HIPAA/compliance |
 | `systematic-debugging` | Fix | Root cause investigation |
@@ -57,19 +60,74 @@ When returning to a project, `using-skillful` checks for `.skillful/handoff.md` 
 
 ## Installation
 
-### Option 1: Manual
+### Prerequisites
 
-1. Clone this repo into your OpenCode plugins directory
-2. The plugin auto-registers via `package.json` and `.opencode/plugins/plugin.js`
-3. Skills are automatically loaded from `skills/`
+- [OpenCode.ai](https://opencode.ai) installed
 
-### Option 2: One-shot AI Install
+### Quick Install
 
-Copy and paste this to your OpenCode agent:
+Add skillful to the `plugin` array in your `opencode.json` (global or project-level):
 
-> Install the skillful plugin from https://github.com/AquaticAzelf/skillful. Clone it, set it up, and make sure OpenCode loads it. Tell me when it's ready.
+```json
+{
+  "plugin": ["skillful@git+https://github.com/AquaticAzelf/skillful.git"]
+}
+```
 
-The agent will clone, configure, and activate it.
+Restart OpenCode. The plugin installs through OpenCode's plugin manager and registers all skills.
+
+Verify by asking: "Check what skills are available"
+
+### Manual Install (if the plugin manager approach doesn't work)
+
+Clone the repo and point OpenCode at the local path in `opencode.json`:
+
+```bash
+git clone https://github.com/AquaticAzelf/skillful.git
+```
+
+Then in `opencode.json`:
+
+```json
+{
+  "plugin": ["path/to/skillful"]
+}
+```
+
+### Migrating from an old clone/symlink install
+
+If you previously installed skillful by cloning and symlinking, switch to the `opencode.json` method above, then remove the old files:
+
+```bash
+rm -f ~/.config/opencode/plugins/plugin.js
+rm -rf ~/.config/opencode/skills/skillful
+```
+
+### Updating
+
+OpenCode installs skillful through a git-backed package spec. Restart OpenCode to pick up new commits. To pin a specific version:
+
+```json
+{
+  "plugin": ["skillful@git+https://github.com/AquaticAzelf/skillful.git#v1.0.0"]
+}
+```
+
+### Windows
+
+Some Windows OpenCode builds have issues with git-backed plugin specs. If installation fails, install with npm:
+
+```powershell
+npm install skillful@git+https://github.com/AquaticAzelf/skillful.git --prefix "$HOME\.config\opencode"
+```
+
+Then point OpenCode at the local path:
+
+```json
+{
+  "plugin": ["~/.config/opencode/node_modules/skillful"]
+}
+```
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: Generates design specs from triage context. When dispatched as a subagent, loads relevant skills and produces a spec file autonomously. When loaded interactively, guides user through design Q&A.
+description: Use when dispatched as a subagent by triage to autonomously produce a design spec. When loaded by a user directly (not as a subagent), guides them through design Q&A.
 ---
 
 # Brainstorming — Spec Generator

@@ -52,15 +52,13 @@ If no handoff is found, proceed normally.
 
 **Invoke relevant or requested skills BEFORE any response or action** — including clarifying questions, exploring the codebase, or checking files. If it turns out wrong for the situation, you don't have to use it.
 
-**Before entering plan mode:** if you haven't already brainstormed, invoke the brainstorming skill first.
-
 Then announce "Using [skill] to [purpose]" and follow the skill exactly. If it has a checklist, create a todo per item.
 
 ## Skill Priority
 
-When multiple skills apply, process skills come first — they set the approach, then implementation skills carry it out.
+When multiple skills apply, process skills come first — they set the approach, then implementation skills carry it out. skillful-triage and systematic-debugging are skillful's most common process skills, but the rule holds for any of them.
 
-- "Let's build X" → skillful:skillful-triage first (triages scope, discovers skills, deep-dives, validates), then planning skills.
+- "Let's build X" → skillful:skillful-triage first. It owns the full build pipeline including brainstorming dispatch.
 - "Fix this bug" → skillful:systematic-debugging first, then domain skills.
 
 ## Red Flags

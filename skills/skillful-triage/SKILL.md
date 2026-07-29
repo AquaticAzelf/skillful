@@ -69,14 +69,18 @@ Announce: "I'll now search for skills relevant to this project."
 
 1. Subagent searches for skills matching the project's tech stack and domain (passed from Step 1)
 2. Evaluates each skill for quality and relevance
-3. Categorizes found skills:
+3. **Mandatory design skills:** If the project has a UI (web app, mobile app, desktop app, dashboard, landing page, etc.), design skills are REQUIRED — not optional. Search for and install at minimum:
+   - `ui-design` / `frontend-design` — component layout, spacing, typography, color
+   - `ux-patterns` — navigation, forms, feedback, accessibility
+   - Any tech-specific design skills matching the framework (React, Vue, SwiftUI, etc.)
+4. Categorizes found skills:
    - **Planning skills** — For both main agent and sub-agents (design patterns, guidelines, best practices)
    - **Implementation skills** — For sub-agents only (framework specifics, tooling)
-4. Installs selected skills
-5. Reports back: skill names, what each does, which category
-6. The main agent reads this report but does NOT load full skill files yet
+5. Installs selected skills
+6. Reports back: skill names, what each does, which category
+7. The main agent reads this report but does NOT load full skill files yet
 
-**Keep it lean:** Only install skills that are genuinely valuable. Context window is limited.
+**Keep it lean for everything else:** Only install non-design skills that are genuinely valuable. Context window is limited. But design skills for UI projects are mandatory — AI-generated UIs are consistently sloppy without them.
 
 **Fallback:** If `npx skills` is not available or fails, skip skill discovery and proceed without it — the project can still move forward with built-in skills.
 
@@ -107,6 +111,7 @@ After skills are discovered and dependencies are installed, announce:
 **REQUIRED SUB-SKILL:** Dispatch a subagent that uses skillful:brainstorming. Pass the following in the dispatch prompt:
 - Tech stack, project type, features, constraints (from Step 1)
 - Discovered skill names and categories (from Step 2)
+- **Design skills found (if any) — the subagent must load these before generating the spec**
 - The output path: `.skillful/spec.md`
 
 The subagent produces `.skillful/spec.md` autonomously. After it returns, read the spec file.
