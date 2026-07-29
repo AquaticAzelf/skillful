@@ -11,8 +11,6 @@ Guide completion of development work by presenting clear options and handling ch
 
 **Core principle:** Verify tests → Detect environment → Present options → Execute choice → Clean up.
 
-**Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
-
 ## The Process
 
 ### Step 1: Verify Tests
@@ -190,88 +188,23 @@ git worktree prune  # Self-healing: clean up any stale registrations
 | 3. Keep as-is | - | - | yes | - |
 | 4. Discard | - | - | - | yes (force) |
 
-## Common Mistakes
-
-**Skipping test verification**
-- **Problem:** Merge broken code, create failing PR
-- **Fix:** Always verify tests before offering options
-
-**Open-ended questions**
-- **Problem:** "What should I do next?" is ambiguous
-- **Fix:** Present exactly 4 structured options (or 3 for detached HEAD)
-
-**Cleaning up worktree for Option 2**
-- **Problem:** Remove worktree user needs for PR iteration
-- **Fix:** Only cleanup for Options 1 and 4
-
-**Deleting branch before removing worktree**
-- **Problem:** `git branch -d` fails because worktree still references the branch
-- **Fix:** Merge first, remove worktree, then delete branch
-
-**Running git worktree remove from inside the worktree**
-- **Problem:** Command fails silently when CWD is inside the worktree being removed
-- **Fix:** Always `cd` to main repo root before `git worktree remove`
-
-**Cleaning up harness-owned worktrees**
-- **Problem:** Removing a worktree the harness created causes phantom state
-- **Fix:** Only clean up worktrees under `.worktrees/` or `worktrees/`
-
-**No confirmation for discard**
-- **Problem:** Accidentally delete work
-- **Fix:** Require typed "discard" confirmation
-
 ## Step 7: Write or Update Project Handoff
 
-After completion (merge, PR, or keep), save project context to `.skillful/handoff.md`:
+Read existing `.skillful/handoff.md` (or create one). Update `state` based on completion: merge → `complete`, PR → `review`, keep → `complete`, discard → `complete`. Format:
 
-1. Read existing `.skillful/handoff.md` if it exists
-2. If none exists, build the handoff from the plan and completion state
-3. Update the `state` field based on completion:
-   - **Merged locally** → `state: complete`
-   - **PR created** → `state: review`
-   - **Kept as-is** → `state: complete`
-   - **Discarded** → `state: complete` (nothing to resume)
-4. The handoff format should include:
-   ```markdown
-   # [Project Name] — Handoff
+```markdown
+# [Project Name] — Handoff
 
-   **state:** [complete | review | design | spec | plan | executing]
+**state:** [complete | review | design | spec | plan | executing]
+**Last action:** [what happened]
+**Summary:** [one-line]
+**Tech Stack:** [languages, frameworks]
+**Architecture:** [2-3 sentences]
+**Spec:** `.skillful/spec.md` (if exists)
+**Plan:** `docs/skillful/plans/[filename].md` (if exists)
+**Key decisions:** [any made]
+```
 
-   **Last action:** [what happened]
+Create `.skillful/` if missing. Add any open questions or next steps.
 
-   **Summary:** [one-line]
 
-   **Tech Stack:** [languages, frameworks]
-
-   **Architecture:** [2-3 sentences]
-
-   **Spec:** `.skillful/spec.md` (if exists)
-
-   **Plan:** `docs/skillful/plans/[filename].md` (if exists)
-
-   **Key decisions:** [any made]
-   ```
-5. Include: project summary, tech stack, architecture, spec path (`.skillful/spec.md`), key decisions, what was built, any limitations
-6. Add any open questions or next steps the user might have
-
-Write the file (create `.skillful/` if it doesn't exist).
-
-## Red Flags
-
-**Never:**
-- Proceed with failing tests
-- Merge without verifying tests on result
-- Delete work without confirmation
-- Force-push without explicit request
-- Remove a worktree before confirming merge success
-- Clean up worktrees you didn't create (provenance check)
-- Run `git worktree remove` from inside the worktree
-
-**Always:**
-- Verify tests before offering options
-- Detect environment before presenting menu
-- Present exactly 4 options (or 3 for detached HEAD)
-- Get typed confirmation for Option 4
-- Clean up worktree for Options 1 & 4 only
-- `cd` to main repo root before worktree removal
-- Run `git worktree prune` after removal

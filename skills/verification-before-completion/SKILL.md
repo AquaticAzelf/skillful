@@ -13,6 +13,8 @@ Claiming work is complete without verification is dishonesty, not efficiency.
 
 **Violating the letter of this rule is violating the spirit of this rule.**
 
+> Formats: This skill uses `skills/_shared/rationalization-tables.md` and `skills/_shared/red-flags.md` for its common patterns.
+
 ## The Iron Law
 
 ```
@@ -37,18 +39,6 @@ BEFORE claiming any status or expressing satisfaction:
 Skip any step = lying, not verifying
 ```
 
-## Common Failures
-
-| Claim | Requires | Not Sufficient |
-|-------|----------|----------------|
-| Tests pass | Test command output: 0 failures | Previous run, "should pass" |
-| Linter clean | Linter output: 0 errors | Partial check, extrapolation |
-| Build succeeds | Build command: exit 0 | Linter passing, logs look good |
-| Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
-| Regression test works | Red-green cycle verified | Test passes once |
-| Agent completed | VCS diff shows changes | Agent reports "success" |
-| Requirements met | Line-by-line checklist | Tests passing |
-
 ## Red Flags - STOP
 
 - Using "should", "probably", "seems to"
@@ -59,19 +49,6 @@ Skip any step = lying, not verifying
 - Thinking "just this once"
 - Tired and wanting work over
 - **ANY wording implying success without having run verification**
-
-## Rationalization Prevention
-
-| Excuse | Reality |
-|--------|---------|
-| "Should work now" | RUN the verification |
-| "I'm confident" | Confidence ≠ evidence |
-| "Just this once" | No exceptions |
-| "Linter passed" | Linter ≠ compiler |
-| "Agent said success" | Verify independently |
-| "I'm tired" | Exhaustion ≠ excuse |
-| "Partial check is enough" | Partial proves nothing |
-| "Different words so rule doesn't apply" | Spirit over letter |
 
 ## Key Patterns
 
@@ -116,24 +93,4 @@ From 24 failure memories:
 
 ## When To Apply
 
-**ALWAYS before:**
-- ANY variation of success/completion claims
-- ANY expression of satisfaction
-- ANY positive statement about work state
-- Committing, PR creation, task completion
-- Moving to next task
-- Delegating to agents
-
-**Rule applies to:**
-- Exact phrases
-- Paraphrases and synonyms
-- Implications of success
-- ANY communication suggesting completion/correctness
-
-## The Bottom Line
-
-**No shortcuts for verification.**
-
-Run the command. Read the output. THEN claim the result.
-
-This is non-negotiable.
+**Before:** ANY success/completion claim, expression of satisfaction, commit, PR, task completion, or agent delegation — including paraphrases and implications of success.

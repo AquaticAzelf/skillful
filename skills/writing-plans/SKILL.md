@@ -5,6 +5,8 @@ description: Use when you have a spec or requirements for a multi-step task, bef
 
 # Writing Plans
 
+> Formats: This skill uses `skills/_shared/hard-gates.md` for its gate pattern.
+
 ## Overview
 
 Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
@@ -12,8 +14,6 @@ Write comprehensive implementation plans assuming the engineer has zero context 
 Start by reading the validated spec from `.skillful/spec.md` — that's your requirements source.
 
 Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
-
-**Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
 
 **Context:** If working in an isolated worktree, it should have been created via the `skillful:using-git-worktrees` skill at execution time.
 
@@ -28,30 +28,19 @@ If the spec covers multiple independent subsystems, it should have been broken i
 
 Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
 
-- Design units with clear boundaries and well-defined interfaces. Each file should have one clear responsibility.
-- You reason best about code you can hold in context at once, and your edits are more reliable when files are focused. Prefer smaller, focused files over large ones that do too much.
-- Files that change together should live together. Split by responsibility, not by technical layer.
-- In existing codebases, follow established patterns. If the codebase uses large files, don't unilaterally restructure - but if a file you're modifying has grown unwieldy, including a split in the plan is reasonable.
+- Design units with clear boundaries and well-defined interfaces. Each file has one clear responsibility. Prefer smaller, focused files. Split by responsibility, not by technical layer.
+- Follow existing codebase patterns; split only when a file has grown unwieldy.
 
 This structure informs the task decomposition. Each task should produce self-contained changes that make sense independently.
 
-## Task Right-Sizing
+## Task Granularity
 
 A task is the smallest unit that carries its own test cycle and is worth a
-fresh reviewer's gate. When drawing task boundaries: fold setup,
-configuration, scaffolding, and documentation steps into the task whose
-deliverable needs them; split only where a reviewer could meaningfully
-reject one task while approving its neighbor. Each task ends with an
-independently testable deliverable.
+fresh reviewer's gate. Fold setup, config, and docs into the task that needs
+them; split only where a reviewer could reject one task while approving its
+neighbor. Each task ends with an independently testable deliverable.
 
-## Bite-Sized Task Granularity
-
-**Each step is one action (2-5 minutes):**
-- "Write the failing test" - step
-- "Run it to make sure it fails" - step
-- "Implement the minimal code to make the test pass" - step
-- "Run the tests and make sure they pass" - step
-- "Commit" - step
+Each step is one action (2-5 minutes): write failing test → verify it fails → implement → verify passes → commit.
 
 ## Plan Document Header
 

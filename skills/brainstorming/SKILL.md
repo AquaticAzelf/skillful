@@ -5,6 +5,8 @@ description: Use when dispatched as a subagent by triage to autonomously produce
 
 # Brainstorming — Spec Generator
 
+> Formats: This skill uses `skills/_shared/hard-gates.md` for its gate pattern.
+
 ## Subagent Mode (Default)
 
 When dispatched by triage as a subagent, work autonomously with the triage context passed to you.
@@ -67,10 +69,6 @@ Do NOT return until the spec file is written to `.skillful/spec.md` and self-rev
 [Things the grill phase should ask the user about]
 ```
 
-### No User Interaction
-
-As a subagent, you cannot ask the user questions. Make reasonable design decisions. If something is truly ambiguous, flag it in the "Open Questions" section — the grill phase will ask the user.
-
 ---
 
 ## Interactive Mode
@@ -93,11 +91,4 @@ Check what skills are installed and use domain knowledge from them to ask deeper
 8. User reviews written spec
 9. Transition to skillful-grill
 
-### Key Principles
 
-- One question at a time
-- Multiple choice preferred
-- YAGNI ruthlessly
-- Explore alternatives
-- Incremental validation
-- Use loaded skills for deeper questions

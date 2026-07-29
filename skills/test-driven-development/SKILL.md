@@ -11,6 +11,8 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Core principle:** If you didn't watch the test fail, you don't know if it tests the right thing.
 
+> Formats: This skill uses `skills/_shared/rationalization-tables.md` and `skills/_shared/red-flags.md` for its common patterns.
+
 **Violating the letter of the rules is violating the spirit of the rules.**
 
 ## When to Use
@@ -163,8 +165,6 @@ async function retryOperation<T>(
 Over-engineered
 </Bad>
 
-Don't add features, refactor other code, or "improve" beyond the test.
-
 ### Verify GREEN - Watch It Pass
 
 **MANDATORY.**
@@ -189,11 +189,7 @@ After green only:
 - Improve names
 - Extract helpers
 
-Keep tests green. Don't add behavior.
-
 ### Repeat
-
-Next failing test for next feature.
 
 ## Good Tests
 
@@ -206,52 +202,19 @@ Next failing test for next feature.
 ## Why Order Matters
 
 **"I'll write tests after to verify it works"**
-
-Tests written after code pass immediately. Passing immediately proves nothing:
-- Might test wrong thing
-- Might test implementation, not behavior
-- Might miss edge cases you forgot
-- You never saw it catch the bug
-
-Test-first forces you to see the test fail, proving it actually tests something.
+Tests-after pass immediately, proving nothing — they may test the wrong thing, test implementation not behavior, or miss edge cases. Test-first forces you to see failure, proving the test works.
 
 **"I already manually tested all the edge cases"**
-
-Manual testing is ad-hoc. You think you tested everything but:
-- No record of what you tested
-- Can't re-run when code changes
-- Easy to forget cases under pressure
-- "It worked when I tried it" ≠ comprehensive
-
-Automated tests are systematic. They run the same way every time.
+Manual testing leaves no record, can't be re-run, and misses cases under pressure. Automated tests are systematic and repeatable.
 
 **"Deleting X hours of work is wasteful"**
-
-Sunk cost fallacy. The time is already gone. Your choice now:
-- Delete and rewrite with TDD (X more hours, high confidence)
-- Keep it and add tests after (30 min, low confidence, likely bugs)
-
-The "waste" is keeping code you can't trust. Working code without real tests is technical debt.
+Sunk cost fallacy. Delete and rewrite with TDD (confidence) or keep and add tests after (low confidence, likely bugs). The waste is keeping untrusted code.
 
 **"TDD is dogmatic, being pragmatic means adapting"**
-
-TDD IS pragmatic:
-- Finds bugs before commit (faster than debugging after)
-- Prevents regressions (tests catch breaks immediately)
-- Documents behavior (tests show how to use code)
-- Enables refactoring (change freely, tests catch breaks)
-
-"Pragmatic" shortcuts = debugging in production = slower.
+TDD IS pragmatic — finds bugs before commit, prevents regressions, documents behavior, enables refactoring. "Pragmatic" shortcuts = slower debugging in production.
 
 **"Tests after achieve the same goals - it's spirit not ritual"**
-
-No. Tests-after answer "What does this do?" Tests-first answer "What should this do?"
-
-Tests-after are biased by your implementation. You test what you built, not what's required. You verify remembered edge cases, not discovered ones.
-
-Tests-first force edge case discovery before implementing. Tests-after verify you remembered everything (you didn't).
-
-30 minutes of tests after ≠ TDD. You get coverage, lose proof tests work.
+Tests-after answer "what does this do?" Tests-first answer "what should this do?" Tests-after are biased by your implementation. 30 minutes of tests-after ≠ TDD.
 
 ## Common Rationalizations
 
@@ -361,11 +324,4 @@ When adding mocks or test utilities, read [testing-anti-patterns.md](testing-ant
 - Adding test-only methods to production classes
 - Mocking without understanding dependencies
 
-## Final Rule
 
-```
-Production code → test exists and failed first
-Otherwise → not TDD
-```
-
-No exceptions without your human partner's permission.

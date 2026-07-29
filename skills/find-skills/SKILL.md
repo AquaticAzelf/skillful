@@ -18,18 +18,7 @@ Use this skill when the user:
 - Wants to search for tools, templates, or workflows
 - Mentions they wish they had help with a specific domain (design, testing, deployment, etc.)
 
-## What is the Skills CLI?
-
-The Skills CLI (`npx skills`) is the package manager for the open agent skills ecosystem. Skills are modular packages that extend agent capabilities with specialized knowledge, workflows, and tools.
-
-**Key commands:**
-
-- `npx skills find [query] [--owner <owner>]` - Search for skills interactively or by keyword, optionally scoped to a GitHub owner
-- `npx skills add <package>` - Install a skill from GitHub or other sources
-- `npx skills check` - Check for skill updates
-- `npx skills update` - Update all installed skills
-
-**Browse skills at:** https://skills.sh/
+**CLI commands:** `npx skills find [query]` (search), `npx skills add <package>` (install), `npx skills check/update` (maintenance). Browse: https://skills.sh/
 
 ## How to Help Users Find Skills
 
@@ -95,13 +84,7 @@ Learn more: https://skills.sh/vercel-labs/agent-skills/react-best-practices
 
 ### Step 6: Offer to Install
 
-If the user wants to proceed, you can install the skill for them:
-
-```bash
-npx skills add <owner/repo@skill> -g -y
-```
-
-The `-g` flag installs globally (user-level) and `-y` skips confirmation prompts.
+If the user wants to proceed: `npx skills add <owner/repo@skill> -g -y`
 
 ## Common Skill Categories
 

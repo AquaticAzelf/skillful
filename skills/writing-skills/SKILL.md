@@ -9,9 +9,9 @@ description: Use when creating new skills, editing existing skills, or verifying
 
 **Writing skills IS Test-Driven Development applied to process documentation.**
 
-**Personal skills live in your runtime's skills directory** — on OpenCode, the project's `skills/` directory or `<home>/.config/opencode/skills/`.
+> Formats: This skill uses `skills/_shared/rationalization-tables.md` and `skills/_shared/red-flags.md` for its common patterns.
 
-You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (agents comply), and refactor (close loopholes).
+**Personal skills live in your runtime's skills directory** — on OpenCode, the project's `skills/` directory or `<home>/.config/opencode/skills/`.
 
 **Core principle:** If you didn't watch an agent fail without the skill, you don't know if the skill teaches the right thing.
 
@@ -38,8 +38,6 @@ A **skill** is a reference guide for proven techniques, patterns, or tools. Skil
 | **Minimal code** | Write skill addressing those specific violations |
 | **Watch it pass** | Verify agent now complies |
 | **Refactor cycle** | Find new rationalizations → plug → re-verify |
-
-The entire skill creation process follows RED-GREEN-REFACTOR.
 
 ## When to Create a Skill
 
@@ -135,10 +133,6 @@ What goes wrong + fixes
 
 **Format:** Start with "Use when..." to focus on triggering conditions
 
-**CRITICAL: Description = When to Use, NOT What the Skill Does**
-
-The description should ONLY describe triggering conditions. Do NOT summarize the skill's process or workflow in the description.
-
 ```yaml
 # ❌ BAD: Summarizes workflow - agents may follow this instead of reading skill
 description: Use when executing plans - dispatches subagent per task with code review between tasks
@@ -158,7 +152,6 @@ description: Use when implementing any feature or bugfix, before writing impleme
 - Describe the *problem* not *language-specific symptoms*
 - Keep triggers technology-agnostic unless the skill itself is technology-specific
 - Write in third person
-- **NEVER summarize the skill's process or workflow**
 
 ```yaml
 # ❌ BAD: Too abstract, vague, doesn't include when to use
@@ -242,29 +235,6 @@ digraph when_flowchart {
 - Reference material → Tables, lists
 - Code examples → Markdown blocks
 - Linear instructions → Numbered lists
-
-## RED-GREEN-REFACTOR for Skills
-
-Follow the TDD cycle:
-
-### RED: Write Failing Test (Baseline)
-
-Run pressure scenario with subagent WITHOUT the skill. Document exact behavior:
-- What choices did they make?
-- What rationalizations did they use (verbatim)?
-- Which pressures triggered violations?
-
-This is "watch the test fail" — you must see what agents naturally do before writing the skill.
-
-### GREEN: Write Minimal Skill
-
-Write skill that addresses those specific rationalizations. Don't add extra content for hypothetical cases.
-
-Run same scenarios WITH skill. Agent should now comply.
-
-### REFACTOR: Close Loopholes
-
-Agent found new rationalization? Add explicit counter. Re-test until bulletproof.
 
 ## Bulletproofing Skills Against Rationalization
 
@@ -391,8 +361,6 @@ Edit skill without testing? Same violation.
 - Not for "just adding a section"
 - Not for "documentation updates"
 - Don't keep untested changes as "reference"
-
-**REQUIRED BACKGROUND:** The skillful:test-driven-development skill explains why this matters. Same principles apply to documentation.
 
 ## Skill Creation Checklist
 

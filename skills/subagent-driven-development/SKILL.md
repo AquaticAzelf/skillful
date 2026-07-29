@@ -5,6 +5,8 @@ description: Use when executing implementation plans with independent tasks in t
 
 # Subagent-Driven Development
 
+> Formats: This skill uses `skills/_shared/rationalization-tables.md` for its common patterns.
+
 Execute plan by dispatching a fresh implementer subagent per task, a task review (spec compliance + code quality) after each, and a broad whole-branch review at the end.
 
 **Why subagents:** You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
@@ -113,30 +115,19 @@ skillful:using-git-worktrees to create one or verify the existing one.
 Never start implementation on a main/master branch without your human
 partner's explicit consent.
 
-Conversation memory does not survive compaction. In real sessions,
-controllers that lost their place have re-dispatched entire completed task
-sequences — the single most expensive failure observed. Track progress in
-a ledger file, not only in todos.
+Conversation memory does not survive compaction. Track progress in a
+ledger file, not only in todos — controllers that lost their place have
+re-dispatched entire completed task sequences.
 
-- Each plan owns a workspace: at skill start, run this skill's
-  `scripts/sdd-workspace PLAN_FILE` — it prints the plan's git-ignored
-  directory (`<repo-root>/.skillful/sdd/<plan-basename>/`), home to
-  every artifact for THIS plan: ledger, briefs, reports, review packages.
+- Each plan owns a workspace: run `scripts/sdd-workspace PLAN_FILE` at skill
+  start — it prints the plan's directory (`<repo-root>/.skillful/sdd/<basename>/`).
   Another plan's directory is never yours to read or write.
 - Check for this plan's ledger at `<workspace>/progress.md`. If its first
-  line names your plan file, tasks with a `Task <N>: complete` line are DONE
-  — do not re-dispatch them; resume at the first task without one. A task
-  whose last line is a fix round is mid-loop: resume the loop at the next
-  round. A ledger whose first line names a different plan file — or a stray
-  ledger at the old flat path `.skillful/sdd/progress.md` — is another
-  plan's progress: leave it in place and start your own, fresh.
-- Create the ledger with its identity as the first line:
-  `# SDD ledger — plan: <plan file path>`.
-- The ledger is your recovery map: the commits it names exist in git even
-  when your context no longer remembers creating them. After compaction,
-  trust the ledger and `git log` over your own recollection.
-- `git clean -fdx` will destroy the workspace (it's git-ignored scratch); if
-  that happens, recover from `git log`.
+  line names your plan file, resume at the first task without a
+  `Task <N>: complete` line. A ledger naming a different plan is not yours.
+  Create yours with: `# SDD ledger — plan: <plan file path>`.
+- The ledger is your recovery map: after compaction, trust the ledger and
+  `git log` over your own recollection.
 
 Read the plan once, note its context and Global Constraints, and create a
 todo per task.
@@ -185,44 +176,24 @@ When the task's plan text contains the complete code to write, the
 implementation is transcription plus testing: use the cheapest tier for
 that implementer. Single-file mechanical fixes also take the cheapest tier.
 
-**Task complexity signals (implementation tasks):**
-- Touches 1-2 files with a complete spec → cheap model
-- Touches multiple files with integration concerns → standard model
-- Requires design judgment or broad codebase understanding → most capable model
-
-## The Task Loop
-
-Everything you paste into a dispatch prompt — and everything a subagent
-prints back — stays resident in your context for the rest of the session
-and is re-read on every later turn. Hand artifacts over as files.
-
 ### 1. Dispatch the implementer
 
 Record BASE (`git rev-parse HEAD`) before dispatching — the review package
 and fix-round diffs need it.
 
-- **Task brief:** before dispatching an implementer, run this skill's
-  `scripts/task-brief PLAN_FILE N` — it extracts the task's full text to a
-  uniquely named file and prints the path. Compose the dispatch so the
-  brief stays the single source of
-  requirements. Your dispatch should contain: (1) one line on where this
-  task fits in the project; (2) the brief path, introduced as "read this
-  first — it is your requirements, with the exact values to use verbatim";
-  (3) the skill names from the plan that the subagent should load;
-  (4) interfaces and decisions from earlier tasks that the brief cannot
-  know; (5) your resolution of any ambiguity you noticed in the brief;
-  (6) the report-file path and report contract. Exact values (numbers,
-  magic strings, signatures, test cases) appear only in the brief. Never
-  make a subagent read the whole plan file.
-- **Report file:** name the implementer's report file after the brief
-  (brief `…/task-N-brief.md` → report `…/task-N-report.md`) and put it in
-  the dispatch prompt. The implementer writes the full report there and
-  returns only status, commits, a one-line test summary, and concerns.
-- A dispatch prompt describes one task, not the session's history. Do not
-  paste accumulated prior-task summaries ("state after Tasks 1-3") into
-  later dispatches — a real session's dispatch hit 42k chars of which 99%
-  was pasted history. A fresh subagent needs its task, the interfaces it
-  touches, and the global constraints. Nothing else.
+- **Task brief:** run `scripts/task-brief PLAN_FILE N` before dispatching —
+  it extracts the task to a unique file and prints the path. The brief is the
+  single source of requirements. Your dispatch contains: the brief path (with
+  verbatim values), skill names, interfaces from earlier tasks, your
+  ambiguity resolution, and the report-file path. Exact values go in the
+  brief only. Never make a subagent read the whole plan.
+- **Report file:** name `…/task-N-brief.md` → `…/task-N-report.md`. The
+  implementer writes the full report there and returns only status, commits,
+  one-line test summary, and concerns.
+- **No history dump:** a fresh subagent needs its task, the interfaces it
+  touches, and the global constraints. Never paste accumulated prior-task
+  summaries — a real session's dispatch hit 42k chars of which 99% was
+  history.
 - If an earlier task parked a finding in the area this task touches, carry
   a pointer to that ledger entry in the dispatch.
 - Record the implementer's agent identity from the dispatch result —
@@ -254,8 +225,6 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 3. If the task is too large, break it into smaller pieces
 4. If the plan itself is wrong, escalate to the human
 
-**Never** ignore an escalation or force the same model to retry without changes. If the implementer said it's stuck, something needs to change.
-
 If the implementer asks questions — before starting or mid-task — answer
 clearly and completely, provide additional context if needed, and don't
 rush it into implementation.
@@ -265,8 +234,7 @@ rush it into implementation.
 Per-task reviews are task-scoped gates. The broad review happens once, at the
 final whole-branch review. Never skip the task review, and never accept a
 report missing either verdict — spec compliance AND task quality are both
-required. Implementer self-review never replaces the task review; both are
-needed.
+required.
 
 - Hand the reviewer its diff as a file: run this skill's
   `scripts/review-package PLAN_FILE BASE HEAD` and pass the reviewer the file path

@@ -14,24 +14,103 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const extractAndStripFrontmatter = (content) => {
-  const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-  if (!match) return { frontmatter: {}, content };
+const log = (msg) => {
+  if (process.env.OPENCODE_DEBUG) console.log(`[Skillful] ${msg}`);
+};
 
-  const frontmatterStr = match[1];
+const extractAndStripFrontmatter = (content) => {
+  if (!content || typeof content !== 'string') {
+    return { frontmatter: {}, content: content || '' };
+  }
+
+  const cleaned = content.replace(/^\uFEFF/, '');
+  const match = cleaned.match(/^---[\r\n]+([\s\S]*?)(?:\r?\n---|---)[\r\n]*([\s\S]*)$/);
+  if (!match) return { frontmatter: {}, content: cleaned };
+
+  const frontmatterStr = match[1].trim();
   const body = match[2];
   const frontmatter = {};
 
-  for (const line of frontmatterStr.split('\n')) {
-    const colonIdx = line.indexOf(':');
-    if (colonIdx > 0) {
-      const key = line.slice(0, colonIdx).trim();
-      const value = line.slice(colonIdx + 1).trim().replace(/^["']|["']$/g, '');
-      frontmatter[key] = value;
+  if (frontmatterStr) {
+    for (const line of frontmatterStr.split('\n')) {
+      const colonIdx = line.indexOf(':');
+      if (colonIdx > 0) {
+        const key = line.slice(0, colonIdx).trim();
+        const value = line.slice(colonIdx + 1).trim().replace(/^["']|["']$/g, '');
+        frontmatter[key] = value;
+      }
     }
   }
 
   return { frontmatter, content: body };
+};
+
+const HANDOFF_STATES = ['design', 'spec', 'plan', 'executing', 'review', 'complete'];
+
+const VALID_TRANSITIONS = {
+  design: ['spec'],
+  spec: ['plan'],
+  plan: ['executing'],
+  executing: ['review'],
+  review: ['complete'],
+  complete: ['design'],
+};
+
+const HANDOFF_PATH = '.skillful/handoff.md';
+
+const parseHandoff = (content) => {
+  if (!content || typeof content !== 'string') return null;
+  const result = {};
+  const stateMatch = content.match(/\*\*state:\*\*\s*(\w+)/);
+  if (stateMatch) result.state = stateMatch[1];
+  const actionMatch = content.match(/\*\*Last action:\*\*\s*(.+)/);
+  if (actionMatch) result.lastAction = actionMatch[1].trim();
+  const branchMatch = content.match(/\*\*Current branch:\*\*\s*(\S+)/);
+  if (branchMatch) result.currentBranch = branchMatch[1];
+  return Object.keys(result).length > 0 ? result : null;
+};
+
+const validateHandoffTransition = (currentState, nextState) => {
+  if (!currentState) return { valid: true };
+  if (!HANDOFF_STATES.includes(currentState)) {
+    return { valid: false, message: `Unknown current state: '${currentState}'` };
+  }
+  if (!HANDOFF_STATES.includes(nextState)) {
+    return { valid: false, message: `Unknown next state: '${nextState}'` };
+  }
+  const allowed = VALID_TRANSITIONS[currentState];
+  if (allowed && allowed.includes(nextState)) {
+    return { valid: true };
+  }
+  return {
+    valid: false,
+    message: `Invalid transition: '${currentState}' \u2192 '${nextState}'. Valid targets: ${(allowed || []).join(', ') || 'none'}`,
+  };
+};
+
+const readHandoff = (rootDir) => {
+  if (!rootDir) return null;
+  const handoffFile = path.resolve(rootDir, HANDOFF_PATH);
+  try {
+    if (!fs.existsSync(handoffFile)) return null;
+    const content = fs.readFileSync(handoffFile, 'utf8');
+    return parseHandoff(content);
+  } catch {
+    return null;
+  }
+};
+
+const getCurrentBranch = (rootDir) => {
+  if (!rootDir) return null;
+  try {
+    const gitDir = path.resolve(rootDir, '.git');
+    if (!fs.existsSync(gitDir)) return null;
+    const head = fs.readFileSync(path.resolve(gitDir, 'HEAD'), 'utf8').trim();
+    const refMatch = head.match(/^ref:\s*refs\/heads\/(\S+)/);
+    return refMatch ? refMatch[1] : null;
+  } catch {
+    return null;
+  }
 };
 
 const normalizePath = (p, homeDir) => {
@@ -47,28 +126,35 @@ const normalizePath = (p, homeDir) => {
 };
 
 let _bootstrapCache = undefined;
+let _bootstrapMtime = undefined;
 
 export const SkillfulPlugin = async ({ client, directory }) => {
   const homeDir = os.homedir();
   const pluginSkillsDir = path.resolve(__dirname, '../../skills');
-  const envConfigDir = normalizePath(process.env.OPENCODE_CONFIG_DIR, homeDir);
-  const configDir = envConfigDir || path.join(homeDir, '.config/opencode');
 
   // Priority order for skills: project > user config > plugin
   // We register plugin skills last so project/user overrides win
+
   const getBootstrapContent = () => {
-    if (_bootstrapCache !== undefined) return _bootstrapCache;
-
     const skillPath = path.join(pluginSkillsDir, 'using-skillful', 'SKILL.md');
-    if (!fs.existsSync(skillPath)) {
-      _bootstrapCache = null;
-      return null;
-    }
 
-    const fullContent = fs.readFileSync(skillPath, 'utf8');
-    const { content } = extractAndStripFrontmatter(fullContent);
+    try {
+      if (!fs.existsSync(skillPath)) {
+        _bootstrapCache = null;
+        _bootstrapMtime = undefined;
+        log('bootstrap SKILL.md not found at ' + skillPath);
+        return null;
+      }
 
-    const toolMapping = `**Tool Mapping for OpenCode:**
+      const currentMtime = fs.statSync(skillPath).mtimeMs;
+      if (_bootstrapCache !== undefined && _bootstrapMtime === currentMtime) {
+        return _bootstrapCache;
+      }
+
+      const fullContent = fs.readFileSync(skillPath, 'utf8');
+      const { content } = extractAndStripFrontmatter(fullContent);
+
+      const toolMapping = `**Tool Mapping for OpenCode:**
 When skills request actions, substitute OpenCode equivalents:
 - Create or update todos → \`todowrite\`
 - \`Subagent (general-purpose):\` → \`task\` with \`subagent_type: "general"\`
@@ -81,7 +167,7 @@ When skills request actions, substitute OpenCode equivalents:
 
 Use OpenCode's native \`skill\` tool to list and load skills.`;
 
-    _bootstrapCache = `<EXTREMELY_IMPORTANT>
+      _bootstrapCache = `<EXTREMELY_IMPORTANT>
 You have skillful.
 
 **IMPORTANT: The bootstrap skill content is included below. It is ALREADY LOADED - you are currently following it. Do NOT use the skill tool to load "using-skillful" again - that would be redundant.**
@@ -91,7 +177,15 @@ ${content}
 ${toolMapping}
 </EXTREMELY_IMPORTANT>`;
 
-    return _bootstrapCache;
+      _bootstrapMtime = currentMtime;
+      log('bootstrap cache updated from ' + skillPath);
+      return _bootstrapCache;
+    } catch (err) {
+      log('bootstrap load failed: ' + err.message);
+      _bootstrapCache = null;
+      _bootstrapMtime = undefined;
+      return null;
+    }
   };
 
   return {
@@ -116,3 +210,6 @@ ${toolMapping}
     }
   };
 };
+
+// Export for testing
+export { extractAndStripFrontmatter, normalizePath, parseHandoff, validateHandoffTransition, readHandoff, getCurrentBranch };

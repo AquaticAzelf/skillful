@@ -11,8 +11,6 @@ A planning skill that ensures security considerations are surfaced during design
 
 **When loaded:** Brainstorming loads this to surface security considerations during spec generation. SDD subagents load it when implementing security-related tasks.
 
-**Announce at start:** "I'm using the security skill to ensure secure design and implementation."
-
 ## Design Phase (for Brainstorming)
 
 When this skill is loaded during brainstorming, consider these areas:
@@ -65,67 +63,7 @@ Each boundary crossing requires validation, authentication, or encryption.
 
 ## Implementation Phase (for SDD)
 
-When this skill is loaded by a subagent implementing a task:
-
-### Authentication
-
-```
-ALWAYS:
-- Hash passwords with bcrypt/argon2 (never plaintext)
-- Use constant-time comparison for secrets
-- Rate-limit login attempts
-- Short-lived access tokens + refresh tokens
-
-NEVER:
-- Roll your own crypto
-- Store passwords in logs
-- Send credentials in URLs
-- Trust client-supplied user identity
-```
-
-### Input Validation
-
-```
-VALIDATE:
-- All input: type, length, range, format
-- File uploads: type, size, content scanning
-- URLs: protocol, host allowlist, no open redirects
-
-SANITIZE:
-- Output encoding for HTML/JS/SQL context
-- Parameterized queries for database
-- Structured data (JSON/XML): strict schema validation
-```
-
-### Secure Storage
-
-```
-- Secrets: use environment variables or secrets manager
-- Config: never hardcode keys, tokens, passwords
-- Database: encrypt sensitive columns, hash passwords
-- Files: restrict permissions, sanitize paths
-- Logs: no sensitive data (PII, credentials, tokens)
-```
-
-### Communication Security
-
-```
-- TLS 1.2+ for all network communication
-- Certificate pinning for mobile apps
-- CORS: restrict origins, don't use *
-- CSP headers for web apps
-- HSTS for production
-```
-
-### Dependency Security
-
-```
-- Audit regularly: npm audit, cargo audit, pip audit
-- Pin versions (lock files)
-- Review transitive dependencies
-- No deprecated/unmaintained packages
-- Verify package signatures where possible
-```
+Follow standard security practices: encrypt secrets, hash passwords (bcrypt/argon2), parameterize queries, validate all input, use TLS 1.2+, pin dependency versions, and audit regularly. Never roll your own crypto, store secrets in code, or trust client-supplied identity.
 
 ## When Not to Use
 

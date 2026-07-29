@@ -9,5 +9,9 @@
     "workflow",
     "custom",
     "plugin"
-  ]
+  ],
+  "scripts": {
+    "test": "node --test",
+    "test:verbose": "node --test --test-reporter spec"
+  }
 }

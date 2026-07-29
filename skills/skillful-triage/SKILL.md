@@ -13,6 +13,8 @@ This is the first step in the skillful build workflow. It determines whether the
 
 **Expectation:** "I'll ask a few questions about your project, then search for relevant skills, install dependencies, and generate a design spec. About 5 minutes before you see the first results."
 
+> Formats: This skill uses `skills/_shared/hard-gates.md` for its gate pattern.
+
 ## Process
 
 **Fast-path:** If the dispatch prompt says "spec exists, skip to Step 5" — skip Steps 0-4 and go directly to Step 5 (Grill). The handoff already contains the context you need.

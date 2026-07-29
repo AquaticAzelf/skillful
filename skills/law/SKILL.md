@@ -11,42 +11,25 @@ A planning skill that ensures legal and compliance considerations are surfaced d
 
 **When loaded:** Brainstorming loads this to surface legal and compliance considerations during spec generation. SDD subagents load it when implementing compliance-related tasks.
 
-**Announce at start:** "I'm using the law skill to identify legal and compliance requirements."
-
 ## Design Phase (for Brainstorming)
 
 When this skill is loaded during brainstorming, consider these areas:
 
 ### Licensing
 
-1. **What license does this project use?**
-   - **Permissive** (MIT, Apache 2.0, BSD) — do anything, no warranty
-   - **Copyleft** (GPL, AGPL) — derivatives must be same license
-   - **Weak copyleft** (LGPL, MPL) — copyleft only for modified files
-   - **Custom** — consult a lawyer, never draft your own
-
-2. **What are the dependencies' licenses?**
-   - Ensure compatibility (GPL + MIT = OK, MIT + GPL = derivative is GPL)
-   - Keep an audit trail (license file headers, NOTICE files)
-   - Flag copyleft dependencies early — they affect distribution
-
-3. **How will this be distributed?**
-   - Open source → choose license, add headers, write LICENSE file
-   - Internal → no distribution restrictions
-   - SaaS → AGPL applies if using AGPL dependencies; no distribution otherwise
-   - Commercial → consider dual-licensing
+Determine the project license and dependency compatibility. Flag copyleft early — it affects distribution. Use standard licenses only; never draft custom ones.
 
 ### Compliance
 
-| Regulation | When it applies | Key requirements |
-|-----------|----------------|-----------------|
-| **GDPR** | EU users, any size | Consent, right to deletion, data portability, breach notification (72h) |
-| **CCPA** | California, for-profit, revenue thresholds | Right to know, delete, opt-out; privacy policy |
-| **HIPAA** | US health data | BAAs, audit logs, access controls, encryption |
-| **COPPA** | US children under 13 | Parental consent, privacy policy, limited data collection |
-| **PCI-DSS** | Credit card processing | Encrypted storage, limited retention, annual attestation |
-| **SOC 2** | Enterprise SaaS | Controls for security, availability, processing integrity |
-| **Export controls** | International distribution | Encryption classification, restricted countries |
+| Regulation | When it applies |
+|-----------|----------------|
+| **GDPR** | EU users, any size |
+| **CCPA** | California, for-profit |
+| **HIPAA** | US health data |
+| **COPPA** | US children under 13 |
+| **PCI-DSS** | Credit card processing |
+| **SOC 2** | Enterprise SaaS |
+| **Export controls** | International distribution |
 
 ### Intellectual Property
 
