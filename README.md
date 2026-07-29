@@ -105,7 +105,12 @@ rm -rf ~/.config/opencode/skills/skillful
 
 ### Updating
 
-OpenCode installs skillful through a git-backed package spec. Restart OpenCode to pick up new commits. To pin a specific version:
+OpenCode installs skillful through a git-backed package spec. Some OpenCode
+and Bun versions pin the resolved git dependency in a lockfile or cache, so a
+restart may not pick up the newest commit. If updates do not appear, clear
+OpenCode's package cache or reinstall the plugin.
+
+To pin a specific version:
 
 ```json
 {
