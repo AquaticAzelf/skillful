@@ -16,21 +16,11 @@ Add this to your `opencode.json` (global or project-level):
 
 Restart OpenCode. That's it. Check it worked by asking: "What skills are available?"
 
-### Windows?
+### Or just paste this to OpenCode
 
-Some OpenCode builds have trouble with git-backed plugins. If it doesn't install:
+Copy this into any OpenCode session and the agent handles everything:
 
-```powershell
-npm install skillful@git+https://github.com/AquaticAzelf/skillful.git --prefix "$HOME\.config\opencode"
-```
-
-Then point OpenCode at the local path:
-
-```json
-{
-  "plugin": ["~/.config/opencode/node_modules/skillful"]
-}
-```
+> Install the skillful plugin from https://github.com/AquaticAzelf/skillful. If you're on Windows and the git-backed install doesn't work, use npm instead: `npm install skillful@git+https://github.com/AquaticAzelf/skillful.git --prefix "$HOME\.config\opencode"`, then add `"~/.config/opencode/node_modules/skillful"` to your opencode.json plugin array. Tell me when it's ready.
 
 ### Updating
 
