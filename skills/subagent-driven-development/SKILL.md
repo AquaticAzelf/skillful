@@ -6,6 +6,7 @@ description: Use when executing implementation plans with independent tasks in t
 # Subagent-Driven Development
 
 > Formats: This skill uses `skills/_shared/rationalization-tables.md` for its common patterns.
+> This skill uses `skills/_shared/context-leak-prevention.md` for dispatch-context hygiene.
 
 Execute plan by dispatching a fresh implementer subagent per task, a task review (spec compliance + code quality) after each, and a broad whole-branch review at the end.
 
@@ -190,12 +191,43 @@ and fix-round diffs need it.
 - **Report file:** name `…/task-N-brief.md` → `…/task-N-report.md`. The
   implementer writes the full report there and returns only status, commits,
   one-line test summary, and concerns.
-- **No history dump:** a fresh subagent needs its task, the interfaces it
-  touches, and the global constraints. Never paste accumulated prior-task
-  summaries — a real session's dispatch hit 42k chars of which 99% was
-  history.
-- If an earlier task parked a finding in the area this task touches, carry
-  a pointer to that ledger entry in the dispatch.
+- **Context leak prevention (see `skills/_shared/context-leak-prevention.md`):**
+  run the three-question self-check before every dispatch:
+
+  1. *Is this prompt carrying unnecessary history?* — cut past task summaries,
+     tool output, session narration
+  2. *Can this information be referenced from an artifact instead?* — brief
+     paths, report files, diff packages, ledger pointers all cost <50 chars;
+     repeating their content costs hundreds and drifts
+  3. *Is the dispatch concise enough for a fresh context?* — a fresh subagent
+     has no prior turns. Every token spent on background noise is stolen from work
+
+  A fresh subagent needs its task, the interfaces it touches, and the global
+  constraints. Never paste accumulated prior-task summaries — a real session's
+  dispatch hit 42k chars of which 99% was history. When an earlier task parked
+  a finding in the area this task touches, carry a pointer to that ledger entry
+  in the dispatch — not a re-summary of the debate that produced it.
+
+  **Example — poor dispatch (context leak):**
+  ```
+  [Copies 300 words of conversation recap — project history, tech stack
+   decisions, Task 1 setup, brainstorming notes. The subagent reads a brief
+   file that already contains its task requirements. Thousands of tokens
+   wasted on noise the subagent doesn't need.]
+  ```
+
+  **Example — good dispatch (artifact references):**
+  ```
+  Context:
+  - Global constraints from plan: Node.js, ESM, marked library
+  - Task 1's `ConfigManager` interface (plan section "Interfaces"):
+    .get(key), .set(key, value)
+  - Ledger: Task 1 parked finding on token storage —
+    .skillful/sdd/plan/progress.md line "Task 1: parked — token storage"
+  - Read that entry if you touch credential persistence
+  ```
+  No history dump. Interface contracts from the plan, not re-summarized.
+  Parked finding is a ledger pointer, not a paragraph of review debate.
 - Record the implementer's agent identity from the dispatch result —
   fix-loop rounds 1-3 resume this agent.
 - Never dispatch multiple implementation subagents in parallel (conflicts).
