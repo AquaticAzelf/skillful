@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.0.1 (2026-07-31)
+
+### Bug Fixes
+
+- **Fix startup crash on OpenCode 1.18.x** — the plugin engine exported six helper functions alongside the plugin itself. OpenCode calls every exported function as a plugin factory, which broke server initialization on launch ("Unexpected server error"). Helpers moved to `.opencode/helpers.js`; `.opencode/plugins/plugin.js` now exports only `SkillfulPlugin`.
+
+### Migration Notes
+
+- **If you pinned `#v1.0.0`, update your pin to `#v1.0.1`** — the v1.0.0 tag points at the crashing build. Unpinned installs (no version ref) automatically receive the fix.
+- If OpenCode fails to pick up the update, clear OpenCode's package cache or reinstall.
+
+---
+
 ## v1.0.0 (2026-07-31)
 
 Initial release. Core pipeline: triage → skill discovery → brainstorming → grill → writing plans → subagent-driven development.
