@@ -5,15 +5,15 @@ import { join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { tmpdir } from 'os';
 
+import { SkillfulPlugin } from '../.opencode/plugins/plugin.js';
 import {
-  SkillfulPlugin,
   extractAndStripFrontmatter,
   normalizePath,
   parseHandoff,
   validateHandoffTransition,
   readHandoff,
   getCurrentBranch,
-} from '../.opencode/plugins/plugin.js';
+} from '../.opencode/helpers.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const FIXTURES = join(__dirname, 'fixtures');
