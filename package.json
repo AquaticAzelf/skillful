@@ -1,6 +1,6 @@
 {
   "name": "skillful",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Structured AI build pipeline for OpenCode: triage, brainstorm, grill, plan, and execute with subagent-driven development",
   "type": "module",
   "main": ".opencode/plugins/plugin.js",

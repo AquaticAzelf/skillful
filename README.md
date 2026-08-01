@@ -64,7 +64,7 @@ OpenCode pins resolved git dependencies in its cache. If a restart doesn't pick 
 
 ```json
 {
-  "plugin": ["skillful@git+https://github.com/AquaticAzelf/skillful.git#v1.0.1"]
+  "plugin": ["skillful@git+https://github.com/AquaticAzelf/skillful.git#v1.0.2"]
 }
 ```
 

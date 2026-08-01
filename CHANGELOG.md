@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.0.2 (2026-08-01)
+
+### Bug Fixes
+
+- **Fix version labeling** — `package.json` still declared `1.0.0` while v1.0.1 was released, so npm-installed builds reported the wrong version. The label now matches the release tag.
+
+### Migration Notes
+
+- If you pinned `#v1.0.1`, update your pin to `#v1.0.2`. Unpinned installs pick up the fix automatically.
+
+---
+
 ## v1.0.1 (2026-07-31)
 
 ### Bug Fixes
